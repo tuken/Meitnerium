@@ -10,17 +10,9 @@ import PerfectHTTP
 
 public struct AccountsHandler {
 
-    public static func list(data: [String:Any]) throws -> RequestHandler {
-        return {
-            req, res in
-            res.completed()
-        }
-    }
-
-    public static func show(data: [String:Any]) throws -> RequestHandler {
-        return {
-            req, res in
-            res.completed()
-        }
+    public static func list(_: HTTPRequest, res: HTTPResponse) {
+        let accounts = try! knex.table("accounts").fetch()
+        res.setBody(string: String(describing: accounts))
+        res.completed()
     }
 }
