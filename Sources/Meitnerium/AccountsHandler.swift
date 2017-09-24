@@ -7,12 +7,32 @@
 
 import Foundation
 import PerfectHTTP
+import PerfectLib
+import SwiftyJSON
 
 public struct AccountsHandler {
 
     public static func list(_: HTTPRequest, res: HTTPResponse) {
-        let accounts = try! knex.table("accounts").fetch()
-        res.setBody(string: String(describing: accounts))
+        let results = try! knex.table("accounts").fetch()
+        if let accounts = results {
+            Log.debug(message: "json: \(accounts)")
+            do {
+                let json = try JSONSerialization.data(withJSONObject: accounts)
+                res.setBody(string: json.description)
+            }
+            catch {
+                Log.error(message: "cannot encode json: \(error)")
+            }
+//            let jobj = JSON(data: accounts. as Data)
+//            do {
+//                let json = try accounts.jsonEncodedString()
+//                res.setBody(string: json)
+//            }
+//            catch {
+//                Log.error(message: "cannot encode json: \(error)")
+//            }
+        }
+        
         res.completed()
     }
 }
