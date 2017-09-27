@@ -15,22 +15,24 @@ public struct AccountsHandler {
     public static func list(_: HTTPRequest, res: HTTPResponse) {
         let results = try! knex.table("accounts").fetch()
         if let accounts = results {
-            Log.debug(message: "json: \(accounts)")
-//            do {
-//                let json = JSON(data: accounts as Data)
-//                //res.setBody(string: json.description)
-//            }
-//            catch {
-//                Log.error(message: "cannot encode json: \(error)")
-//            }
-//            let jobj = JSON(data: accounts. as Data)
             do {
                 let json = try accounts.jsonEncodedString()
                 res.setBody(string: json)
             }
             catch {
                 Log.error(message: "cannot encode json: \(error)")
+                res.status = .internalServerError
             }
+        }
+        
+        res.completed()
+    }
+    
+    public static func temp(req: HTTPRequest, res: HTTPResponse) {
+        if let body = req.postBodyString, let json = try? body.jsonDecode(), let jobj = json as? Dictionary<String, Any> {
+        }
+        else {
+            res.status = .badRequest
         }
         
         res.completed()
