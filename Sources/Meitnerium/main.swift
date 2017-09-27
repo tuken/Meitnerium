@@ -1,10 +1,47 @@
+import Foundation
 import PerfectHTTPServer
 import PerfectLib
 import PerfectHTTP
 import SwiftKnex
 
+extension Int8: JSONConvertible {
+    public func jsonEncodedString() throws -> String {
+        return String(self)
+    }
+}
+
+extension Int16: JSONConvertible {
+    public func jsonEncodedString() throws -> String {
+        return String(self)
+    }
+}
+
+extension UInt8: JSONConvertible {
+    public func jsonEncodedString() throws -> String {
+        return String(self)
+    }
+}
+
+extension UInt16: JSONConvertible {
+    public func jsonEncodedString() throws -> String {
+        return String(self)
+    }
+}
+
+extension NSNull: JSONConvertible {
+    public func jsonEncodedString() throws -> String {
+        return "null"
+    }
+}
+
+extension Date: JSONConvertible {
+    public func jsonEncodedString() throws -> String {
+        return "\"\(self.description)\""
+    }
+}
+
 var logger = FileLogger()
-logger.filename = "/Users/tsukasa/Meitnerium.log"
+logger.filename = "/Users/tsukasa.ikawa/Meitnerium.log"
 Log.logger = logger
 
 let config = KnexConfig(host: "localhost", user: "root", password: "secualpass", database: "secual", isShowSQLLog: true)

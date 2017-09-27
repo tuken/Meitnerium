@@ -16,21 +16,21 @@ public struct AccountsHandler {
         let results = try! knex.table("accounts").fetch()
         if let accounts = results {
             Log.debug(message: "json: \(accounts)")
-            do {
-                let json = try JSONSerialization.data(withJSONObject: accounts)
-                res.setBody(string: json.description)
-            }
-            catch {
-                Log.error(message: "cannot encode json: \(error)")
-            }
-//            let jobj = JSON(data: accounts. as Data)
 //            do {
-//                let json = try accounts.jsonEncodedString()
-//                res.setBody(string: json)
+//                let json = JSON(data: accounts as Data)
+//                //res.setBody(string: json.description)
 //            }
 //            catch {
 //                Log.error(message: "cannot encode json: \(error)")
 //            }
+//            let jobj = JSON(data: accounts. as Data)
+            do {
+                let json = try accounts.jsonEncodedString()
+                res.setBody(string: json)
+            }
+            catch {
+                Log.error(message: "cannot encode json: \(error)")
+            }
         }
         
         res.completed()
