@@ -9,6 +9,7 @@ import Foundation
 import PerfectHTTP
 import PerfectLib
 import SwiftyJSON
+import Validation
 
 public struct AccountsHandler {
 
@@ -29,10 +30,21 @@ public struct AccountsHandler {
     }
     
     public static func temp(req: HTTPRequest, res: HTTPResponse) {
-        if let body = req.postBodyString, let json = try? body.jsonDecode(), let jobj = json as? Dictionary<String, Any> {
+        guard let body = req.postBodyString, let json = try? body.jsonDecode(), let jobj = json as? Dictionary<String, Any> else {
+            Log.error(message: "no parameter: ")
+            res.completed(status: .badRequest)
+            return
         }
-        else {
-            res.status = .badRequest
+
+        do {
+            guard let email = jobj["email"] as? String else {
+                throw SecualError.noParameter
+            }
+            try EmailValidator().validate(email)
+        }
+        catch {
+            Log.error(message: "invalid parameter: \(error)")
+            res.status = .internalServerError
         }
         
         res.completed()

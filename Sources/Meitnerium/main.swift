@@ -4,6 +4,10 @@ import PerfectLib
 import PerfectHTTP
 import SwiftKnex
 
+enum SecualError: Error {
+    case noParameter
+}
+
 extension Int8: JSONConvertible {
     public func jsonEncodedString() throws -> String {
         return String(self)
@@ -49,7 +53,8 @@ let con = try! KnexConnection(config: config)
 let knex = con.knex()
 
 var routes = Routes()
-routes.add(method: .get, uri: "/v2/zip", handler: AccountsHandler.list)
+routes.add(method: .get, uri: "/v2/list", handler: AccountsHandler.list)
+routes.add(method: .post, uri: "/v2/temp", handler: AccountsHandler.temp)
 
 let server = HTTPServer()
 server.serverName = "localhost"
