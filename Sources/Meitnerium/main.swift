@@ -5,7 +5,8 @@ import PerfectHTTP
 import SwiftKnex
 
 enum SecualError: Error {
-    case noParameter
+    case noJsonObject
+    case noParameter(String)
 }
 
 extension Int8: JSONConvertible {

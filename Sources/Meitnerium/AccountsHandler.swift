@@ -8,8 +8,36 @@
 import Foundation
 import PerfectHTTP
 import PerfectLib
-import SwiftyJSON
 import Validation
+
+struct tempModel {
+    
+    var email: String = ""
+    
+    var password: String = ""
+    
+    init(req: HTTPRequest) throws {
+        guard let body = req.postBodyString, let json = try? body.jsonDecode(), let jobj = json as? Dictionary<String, Any> else {
+            Log.error(message: "no json in http request: {\(String(describing: req.postBodyString))}")
+            throw SecualError.noJsonObject
+        }
+
+        guard let email = jobj["email"] as? String else {
+            throw SecualError.noParameter("email")
+        }
+        
+        try EmailValidator().validate(email)
+        self.email = email
+
+        guard let password = jobj["password"] as? String, let confirm_password = jobj["confirm_password"] as? String else {
+            throw SecualError.noParameter("password")
+        }
+        
+        let passwd = Equals<String>(confirm_password)
+        try passwd.validate(password)
+        self.password = password
+    }
+}
 
 public struct AccountsHandler {
 
@@ -30,21 +58,14 @@ public struct AccountsHandler {
     }
     
     public static func temp(req: HTTPRequest, res: HTTPResponse) {
-        guard let body = req.postBodyString, let json = try? body.jsonDecode(), let jobj = json as? Dictionary<String, Any> else {
-            Log.error(message: "no parameter: ")
-            res.completed(status: .badRequest)
-            return
-        }
-
+        var modl: tempModel
+        
         do {
-            guard let email = jobj["email"] as? String else {
-                throw SecualError.noParameter
-            }
-            try EmailValidator().validate(email)
+            try modl = tempModel(req: req)
         }
         catch {
-            Log.error(message: "invalid parameter: \(error)")
-            res.status = .internalServerError
+            Log.error(message: "\(error)")
+            res.status = .badRequest
         }
         
         res.completed()
