@@ -9,54 +9,65 @@ import Foundation
 import PerfectHTTP
 import PerfectLib
 
-struct NewAccount {
+class NewAccount: RequestModel {
     
     var email: String = ""
     
     var password: String = ""
     
-    init(req: HTTPRequest) throws {
-        guard let body = req.postBodyString, let json = try? body.jsonDecode(), let jobj = json as? Dictionary<String, Any> else { throw SecualError.noJsonObject(String(describing: req.postBodyString)) }
-        guard let email = jobj["email"] as? String else { throw SecualError.noParameter("email") }
+    var first_name: String = ""
+    
+    var last_name: String = ""
+    
+    var zip: String? = nil
+    
+    var address: String? = nil
+    
+    var tel: String? = nil
+    
+    var mobile_tel: String? = nil
+
+    override init(req: HTTPRequest) throws {
+        try super.init(req: req)
+        
+        guard let email = jsonObj["email"] as? String else { throw SecualError.noParameter("email") }
         guard email.range(of: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}", options: .regularExpression, range: nil, locale: nil) != nil else { throw SecualError.invalidFormat("invalid email format") }
-        guard let password = jobj["password"] as? String, let confirm_password = jobj["confirm_password"] as? String else { throw SecualError.noParameter("password") }
+        guard let password = jsonObj["password"] as? String, let confirm_password = jsonObj["confirm_password"] as? String else { throw SecualError.noParameter("password") }
         guard password.range(of: "[A-Z0-9a-z!.-=@<>]{8,16}", options: .regularExpression, range: nil, locale: nil) != nil else { throw SecualError.invalidFormat("invalid password format") }
         guard password == confirm_password else { throw SecualError.invalidValue("different two password") }
+        guard let first_name = jsonObj["first_name"] as? String else { throw SecualError.noParameter("first_name")  }
+        guard let last_name = jsonObj["last_name"] as? String else { throw SecualError.noParameter("last_name")  }
 
         self.email = email
         self.password = password
-    }
-}
-
-public struct AccountsHandler {
-
-    public static func list(_: HTTPRequest, res: HTTPResponse) {
-        let results = try! knex.table("accounts").fetch()
-        if let accounts = results {
-            do {
-                let json = try accounts.jsonEncodedString()
-                res.setBody(string: json)
-            }
-            catch {
-                Log.error(message: "cannot encode json: \(error)")
-                res.status = .internalServerError
-            }
-        }
-        
-        res.completed()
+        self.first_name = first_name
+        self.last_name = last_name
+        self.zip = jsonObj["zip"] as? String
+        self.address = jsonObj["address"] as? String
+        self.tel = jsonObj["tel"] as? String
+        self.mobile_tel = jsonObj["mobile_tel"] as? String
     }
     
-    public static func temp(req: HTTPRequest, res: HTTPResponse) {
-        var modl: NewAccount
+    override func asInsertData() -> [String : Any] {
+        var data = ["email":self.email, "password":self.password, "first_name":self.first_name, "last_name":self.last_name, "account_id":UUID().string]
         
-        do {
-            try modl = NewAccount(req: req)
-        }
-        catch {
-            Log.error(message: "\(error)")
-            res.status = .badRequest
+        if let zip = self.zip {
+            data["zip"] = zip
         }
         
-        res.completed()
+        if let address = self.address {
+            data["address"] = address
+        }
+        
+        if let tel = self.tel {
+            data["tel"] = tel
+        }
+        
+        if let mobile_tel = self.mobile_tel {
+            data["mobile_tel"] = mobile_tel
+        }
+        
+        return data
     }
 }
+
