@@ -39,6 +39,9 @@ public struct FileLogger: Logger {
     public func error(message: String, _ even: Bool) {
         filelog(priority: even ? "[ERR]" : "[ERROR]", message, even)
     }
+//    public func error(message: String, _ even: Bool, function: String = #function, line: Int = #line) {
+//        filelog(priority: even ? "[ERR]" : "[ERROR]", "[\(function):\(line)]" + message, even)
+//    }
     
     public func critical(message: String, _ even: Bool) {
         filelog(priority: even ? "[CRIT] " : "[CRITICAL]", message, even)
