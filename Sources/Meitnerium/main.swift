@@ -1,51 +1,15 @@
+//
+//  main.swift
+//  Meitnerium
+//
+//  Created by 井川司 on 2017/09/22.
+//
+
 import Foundation
 import PerfectHTTPServer
 import PerfectLib
 import PerfectHTTP
 import SwiftKnex
-
-enum SecualError: Error {
-    case noJsonObject(String)
-    case noParameter(String)
-    case invalidFormat(String)
-    case invalidValue(String)
-}
-
-extension Int8: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension Int16: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension UInt8: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension UInt16: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension NSNull: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return "null"
-    }
-}
-
-extension Date: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return "\"\(self.description)\""
-    }
-}
 
 var logger = FileLogger()
 logger.filename = "/Users/tsukasa.ikawa/Meitnerium.log"
