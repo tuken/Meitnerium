@@ -9,6 +9,7 @@ enum SecualError: Error {
     case noParameter(String)
     case invalidFormat(String)
     case invalidValue(String)
+    case openRandom(Int32)
 }
 
 extension Int8: JSONConvertible {
@@ -47,8 +48,30 @@ extension Date: JSONConvertible {
     }
 }
 
+func randomString() -> String {
+    var array = [UInt8](repeating: 0, count: 10)
+    
+    let fd = open("/dev/urandom", O_RDONLY)
+    if fd != -1 {
+        read(fd, &array, MemoryLayout.size(ofValue: array) * array.count)
+        close(fd)
+        
+        let data = Data(array)
+        return data.base64EncodedString()
+            .replacingOccurrences(of: "/", with: "a")
+            .replacingOccurrences(of: "+", with: "z")
+            .replacingOccurrences(of: "=", with: "-")
+    }
+    
+    return UUID().string
+}
+
+let formatter = DateFormatter()
+formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+formatter.locale = Locale(identifier: "ja_JP")
+
 var logger = FileLogger()
-logger.filename = "/Users/tsukasa.ikawa/Meitnerium.log"
+logger.filename = "/Users/tsukasa/Meitnerium.log"
 Log.logger = logger
 
 let config = KnexConfig(host: "localhost", user: "root", password: "secualpass", database: "secual", isShowSQLLog: true)

@@ -5,19 +5,20 @@ public struct FileLogger: Logger {
 
     public var filename = "./FileLogger.log"
     
-    public init(){}
+    private let format = DateFormatter()
+    
+    public init() {
+        self.format.locale = Locale(identifier: "ja_JP")
+        self.format.timeStyle = .medium
+        self.format.dateStyle = .medium
+    }
     
     func filelog(priority: String, _ args: String, _ even: Bool) {
-        let format = DateFormatter()
-        format.locale = Locale(identifier: "ja_JP")
-        format.timeStyle = .medium
-        format.dateStyle = .medium
-
         let ff = File(self.filename)
         defer { ff.close() }
         do {
             try ff.open(.append)
-            try ff.write(string: "\(priority) [\(format.string(from: Date()))] \(args)\n")
+            try ff.write(string: "\(priority) [\(self.format.string(from: Date()))] \(args)\n")
         }
         catch {
             ConsoleLogger().critical(message: "\(error)", even)

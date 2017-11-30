@@ -1,5 +1,5 @@
 //
-//  AccountsHandler.swift
+//  AccountsModel.swift
 //  Meitnerium
 //
 //  Created by 井川司 on 2017/09/22.
@@ -8,8 +8,9 @@
 import Foundation
 import PerfectHTTP
 import PerfectLib
+import SwiftKnex
 
-class NewAccount: RequestModel {
+class NewAccountTemp: RequestModel {
     
     var email: String = ""
     
@@ -48,8 +49,10 @@ class NewAccount: RequestModel {
         self.mobile_tel = jsonObj["mobile_tel"] as? String
     }
     
-    override func asInsertData() -> [String : Any] {
-        var data = ["email":self.email, "password":self.password, "first_name":self.first_name, "last_name":self.last_name, "account_id":UUID().string]
+    override func asInsertData() -> [String:Any] {
+        let token = randomString()
+        let expiry = Date(timeIntervalSinceNow: 86400)
+        var data: [String:Any] = ["email":self.email, "password":self.password, "first_name":self.first_name, "last_name":self.last_name, "token":token, "expiry":formatter.string(from: expiry)]
         
         if let zip = self.zip {
             data["zip"] = zip
