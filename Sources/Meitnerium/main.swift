@@ -11,50 +11,6 @@ import PerfectLib
 import PerfectHTTP
 import SwiftKnex
 
-enum SecualError: Error {
-    case noJsonObject(String)
-    case noParameter(String)
-    case invalidFormat(String)
-    case invalidValue(String)
-    case openRandom(Int32)
-}
-
-extension Int8: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension Int16: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension UInt8: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension UInt16: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return String(self)
-    }
-}
-
-extension NSNull: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return "null"
-    }
-}
-
-extension Date: JSONConvertible {
-    public func jsonEncodedString() throws -> String {
-        return "\"\(self.description)\""
-    }
-}
-
 func randomString() -> String {
     var array = [UInt8](repeating: 0, count: 10)
     
@@ -78,7 +34,7 @@ formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 formatter.locale = Locale(identifier: "ja_JP")
 
 var logger = FileLogger()
-logger.filename = "/Users/tsukasa/Meitnerium.log"
+logger.filename = "/Users/tsukasa.ikawa/Meitnerium.log"
 Log.logger = logger
 
 let config = KnexConfig(host: "localhost", user: "root", password: "secualpass", database: "secual", isShowSQLLog: true)
