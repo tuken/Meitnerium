@@ -34,7 +34,7 @@ public struct AccountsHandler {
             acc = try NewAccountTemp(req: req)
             let token = randomString()
             let expiry = Date(timeIntervalSinceNow: 86400)
-            var data: [String:Any] = ["email":acc.email, "password":acc.password, "first_name":acc.first_name, "last_name":acc.last_name, "token":token, "expiry":formatter.string(from: expiry)]
+            let data: [String:Any] = ["email" : acc.email, "password" : acc.password, "first_name" : acc.first_name, "last_name" : acc.last_name, "token" : token, "expiry" : formatter.string(from: expiry)]
             let res = try knex.insert(into: "account_temporaries", values: data)
             Log.info(message: "\(res)")
         }
