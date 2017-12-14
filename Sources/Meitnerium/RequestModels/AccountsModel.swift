@@ -73,4 +73,3 @@ class NewAccountTemp: RequestModel {
         return data
     }
 }
-

@@ -42,8 +42,9 @@ let con = try! KnexConnection(config: config)
 let knex = con.knex()
 
 var routes = Routes()
-routes.add(method: .get, uri: "/v2/list", handler: AccountsHandler.list)
-routes.add(method: .post, uri: "/v2/new", handler: AccountsHandler.new)
+routes.add(method: .post, uri: "/v2/signin", handler: SignHandler.in)
+routes.add(method: .get, uri: "/v2/accounts", handler: AccountsHandler.list)
+routes.add(method: .post, uri: "/v2/signup", handler: AccountsHandler.new)
 
 let server = HTTPServer()
 server.serverName = "localhost"
