@@ -12,10 +12,10 @@ import PerfectLib
 public struct SignHandler {
     
     public static func `in`(req: HTTPRequest, res: HTTPResponse) {
-        var acc: NewAccountTemp
+        var sin: Signin
         
         do {
-            acc = try NewAccountTemp(req: req)
+            sin = try Signin(req: req)
             let token = randomString()
             let expiry = Date(timeIntervalSinceNow: 86400)
             let data: [String:Any] = ["email" : acc.email, "password" : acc.password, "first_name" : acc.first_name, "last_name" : acc.last_name, "token" : token, "expiry" : formatter.string(from: expiry)]
